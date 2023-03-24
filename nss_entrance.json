@@ -1,0 +1,17 @@
+{
+  "//": "we strongly suggest to deploy your own contract",
+  "entrance_contract": "0x035eb72ebb52c3b31190434fe954a8e102d082c8",
+
+  "//": "the traffic is cache and minimal so free tier of alchemy/infura is more than enough",
+  "rpc_node_url":"https://rpc2.sepolia.org",
+
+  "//": "how should we assign userid/groupid",
+  "min_uid": "1001",
+  "min_gid": "1002",
+
+  "//": "the clustername should be unique, and only you should be able to control this",
+  "cluster_name": "entrance",
+
+  "//": "should run as a user with minimal permission",
+  "run_as_user": "nobody"
+}

@@ -1,0 +1,27 @@
+site_name: 'entrance: OpenSSH management using blockchain'
+site_url: https://entrance.openstory.io/
+copyright: "Copyright &copy; 2023 Openstory Team"
+repo_name: blockchain-Innovation-Studio/entrance
+repo_url: "https://github.com/blockchain-Innovation-Studio/entrance"
+edit_uri: ../entrance/edit/master/docs/
+remote_branch: gh-page
+
+theme:
+  name: material
+
+  palette:
+   - scheme: default
+     toggle:
+       icon: material/weather-night
+       name: Switch to dark mode
+   - scheme: slate
+     toggle:
+       icon: material/weather-sunny
+       name: Switch to light mode
+  features:
+    - navigation.top
+    - navigation.tracking
+    - announce.dismiss
+    - content.tabs.link
+    - search.share
+    - search.highlight

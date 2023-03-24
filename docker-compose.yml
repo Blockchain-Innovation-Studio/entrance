@@ -1,0 +1,11 @@
+services:
+  ssh:
+    build: .
+    ports:
+      - "2323:22"
+    environment:
+      - ETH_NODE_URL
+      - ENTRANCE_ADDRESS=0x035eb72ebb52c3b31190434fe954a8e102d082c8
+      - DMZ_PRIVATE_KEY
+    volumes:
+      - ./:/app
