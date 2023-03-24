@@ -36,9 +36,35 @@ manage users and their public key.
 Manage user this way means that every server has their own view of users
 and can be out of sync between servers. To add a new user on every
 servers, we have to execute Chef or Ansible to apply these. So to
-mitigate this and ensure all server has a consistent set of user
+mitigate this and ensure all server has a consistent set of user.
 
-## Is it safe to store public key on-chain
+On top of that, we also need to be careful to make sure the user id and
+group id is consistent between server.
+
+Regardless, this isn't an efficient system because it requires computing
+time to change state of every server.
+
+Because of that, people starts to use PAM/NSS such as OpenLDAP to
+centralize user and key management. However, how do we login to LDAP
+server at first place? How do we secure access to LDAP web ui? It's
+turtle on the way down.
+
+How do we ensure uptime of the SSO server? We know introduce a single
+point of failure  into our system.
+
+By leveraging blockchain to store this data, we solve a few problems:
+
+- There is no need to dashboard or UI. Executing contracts is faily
+  common on blockchain. Etherscan supports it beside many other tool.
+- Authentication is done for us based on user wallet.
+- Built in Audit Trail: we have a full trails of who adds what on when
+- Highly available: The uptime of the system is the uptime of the RPC
+  node. There are many RPC services to use
+
+
+## FAQ
+
+### Is it safe to store public key on-chain
 
 Yes, it's public key. People have been distributing public key on key
 server for years. Anyone who uses Github also have their key public
@@ -46,42 +72,41 @@ viewable by anybody.
 
 Example, this is [Pokadot's founder Gavin's public key](https://api.github.com/users/gavofyork/keys)
 
+### How much does it cost
 
-## How it works
+The only cost is whenever you write to blockchain including:
 
-To allow a user login to a server through OpenSSH, there are 2 phases.
+- deloy the smart contract. You can optinally use our deployed contract
+  directly too.
+- write data to blockchain such as adding admin, add user, add/delete
+ public key
 
-1. Identify user
-2. Validate user
+### Can I continue to use entrance if you are disappear tomorrow
 
-### Identify user
+Yes, this is blockchain strongsuit. Once the code is deployed to the
+chain, and data is added, it stays there forever. Reading from
+blockchain is always free, all you need is a RPC node
 
-When you run `ssh alice@server-ip`, the username `alice` is send to
-server. This username is used to query information about the user. If a
-user doesn't exist on the server, you will get a `Permission Error` but
-when tailing log on server.
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+### Do I need to know Solidity
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
-
+No. Simply use our own deployed contract. It's safe and secure. You can
+create a cluster which you and only you have permission to manage it.
 
 ## Get Support
+
+If you don't want to deploy a smart contract yourself, we can  help.
 
 There are 2 ways to achieve support for your Entrance installation.
 
 ### Commercial Support
 
+We plan to do commercial support and will built SaaS with dashboard and
+UI to help you deploy the contract and manage the infra from our UI.
+Note that this is optinal, our SaaS offering is just a nice UI layer.
+You can keep managing directly by executing the contract function on
+etherscan or any wallet that support execute smart contract.
+
 ### Community Support
 
 Join our [discord channel](https://discord.gg/KEQnvapjC2) to dicuss and
 get help from community.
-
-
