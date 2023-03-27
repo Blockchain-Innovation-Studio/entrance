@@ -4,85 +4,47 @@ entrance is how OpenStory manage our SSH Authentication infrastructure.
 
 # Why
 
-Any companies that manage a large scale deployment of server will need
-to manage and define how user can SSH into the server. There is all
-kind of automation tools to manage and populate this data. Everytime a
-new user onboard or rotate key there are 2 steps:
+OpenStory has developed a unique solution called Entrance to manage the SSH Authentication infrastructure. When it comes to companies that manage large-scale server deployments, it's crucial to manage and define how users can SSH into the server. Automation tools can help manage and populate this data. However, whenever there is a new user onboarded or a key rotated, two steps must be taken: populating the data storage and triggering a run of the automation tool to populate those keys. Some companies use certificate-based authentication to manage this process, but it is different from the normal public/private key and requires generating and provisioning the cert.
 
-- populate the data stoage
-- trigger a run of the automationtool to populate those keys.
-
-Certain company use certificate based to manage this and solve these
-pain points. But cert based is different from the normal public/private
-key and have to deal with generate and provision the cert.
-
-There is also LDAP and PAM, run on top of NSS.
-
-But then how can we bootstrap SSH key management for those central
-servers, how we ensure their uptime? How do we manage audit log.
-
-BlockChain to the rescues. We leverage the ability of immutable,
-traceable of every actions to manage key and user directly on the
-blockchain, also having a full audit trait of the action
-
+LDAP and PAM are other options that run on top of NSS, but the question arises: How can we bootstrap SSH key management for those central servers? How can we ensure their uptime? How do we manage audit logs? The answer lies in blockchain technology. By leveraging the ability of the blockchain to provide an immutable and traceable record of every action, OpenStory has created a solution that manages key and user directly on the blockchain while having a full audit trail of the action.
 
 # How it works
 
-We stored user public keys on the blockchain. When user login, instead
-of looking into the default `$HOME/.ssh/authorized_keys` we fetch the
-key from the blockchain for t hat user.
-
-We use [AuthorizedKeysCommand](https://man.openbsd.org/sshd_config#AuthorizedKeysCommand)
-to run our custom program that extract the public key from the
-blockchain.
-
-The system include 3 components:
+Here's how it works: Entrance stores user public keys on the blockchain. When a user logs in, instead of looking into the default $HOME/.ssh/authorized_keys, the system fetches the key from the blockchain for that user. Entrance uses the AuthorizedKeysCommand to run its custom program that extracts the public key from the blockchain. The system comprises three components: the blockchain, the AuthorizedKeysCommand program, and the SSH server.
 
 ## Blockchain
 
-A contract to store the public key on chain. We use below concepts:
-
-- deployment: a deployment is a cluster of server
-- user: a user belong to a deployment, a user have one or many key
-- key: a public key is stored on-chain. we recomend EDDSA but RSA or DSA
-  also work.
+The blockchain component is a contract that stores the public key on the chain. OpenStory recommends using EDDSA, but RSA or DSA also work. A deployment is a cluster of servers, and each user belongs to a deployment and has one or many keys.
 
 ## AuthorizedKeysCommand program
 
-This is binary that needs to deploy into the target computer. And the
-SSH needs to be configured this way:
-
-```
-# /etc/ssh/sshd_config
+The AuthorizedKeysCommand program is a binary that needs to be deployed into the target computer. SSH needs to be configured to run this program. In the /etc/ssh/sshd_config file, add the following lines:
 
 AuthorizedKeysCommand /usr/bin/entrance -deployment=[deployment-name] -user=%u
 AuthorizedKeysCommandUser nobody
-```
 
+Make sure to replace [deployment-name] with the name of your deployment.
 
 # Getting started
 
-To start with, you would need to deploy a contract. To
-experiment, you can use our contract without deploying your own. The
-contract is deployed on Polygon network at this address:
+To get started, you need to deploy a contract. If you want to experiment, you can use OpenStory's contract without deploying your own. The contract is deployed on the Polygon network at a specific address. 
 
 ## Creating the deployment
 
-After having the contract, execute this method:
+After having the contract, execute the create_deployment method to create a deployment.
 
 
 ```
 create_deployment
 
-input: deployment, need to be unique. The execution error out if a name
-is already existed. So make sure to pick some randome, unique enough
-name to save gas
+input: deployment, need to be unique. The execution will error out if the name already exists, 
+so make sure to pick a unique name to save gas
 ```
 
-To find existing deployment you can use `list_deployment`.
+To find an existing deployment, use the `list_deployment` method.
 
-The person who executed the contract become the admin of this
-deployment, to add more admin run method
+The person who executes the contract becomes the admin of this deployment. 
+To add more admins, run the add_admin method.
 
 ```
 add_admin
@@ -106,7 +68,8 @@ AuthorizedKeysCommandUser nobody
 
 make sure you put the right `deployment-name`
 
-## Manage key
+## Manage keys
+
 
 At this point you have a deployment, and the SSH server with the right
 config. To add user or key to a deployment, simply run:
